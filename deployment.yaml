@@ -3,9 +3,9 @@ kind: Job
 metadata:
   name: test-darah
 spec:
+  ttlSecondsAfterFinished: 30
   template:
     # This is the pod template
-    ttlSecondsAfterFinished: 30
     spec:
       containers:
       - name: test-darah
