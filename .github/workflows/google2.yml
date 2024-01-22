@@ -84,7 +84,7 @@ jobs:
     - name: Deploy
       run: |-
         # replacing the image name in the k8s template
-        cd base
+        pwd
         ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
         ./kustomize build . | kubectl apply -f -
         kubectl rollout status deployment/$DEPLOYMENT_NAME
