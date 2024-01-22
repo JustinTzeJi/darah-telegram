@@ -15,7 +15,7 @@ name: Build and Deploy to GKE2
 on: workflow_dispatch
 
 env:
-  PROJECT_ID: articulate-case-410317
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GAR_LOCATION: us-central1 # TODO: update region of the Artifact Registry
   GKE_CLUSTER: cluster-1    # TODO: update to cluster name
   GKE_ZONE: us-central1   # TODO: update to cluster zone
