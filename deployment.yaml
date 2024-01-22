@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: the-container
-        image: gcr.io/articulate-case-410317/test-darah:latest
+        image: gcr.io/PROJECT_ID/IMAGE:TAG
         command: ["echo",
                   "abc"]
         ports:
