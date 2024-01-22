@@ -15,7 +15,7 @@ spec:
       containers:
       - name: the-container
         image: gcr.io/PROJECT_ID/IMAGE:TAG
-        command: ["echo",
-                  "abc"]
+        command: ["python",
+                  "test.py"]
         ports:
         - containerPort: 8080
