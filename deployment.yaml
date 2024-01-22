@@ -5,6 +5,7 @@ metadata:
 spec:
   template:
     # This is the pod template
+    ttlSecondsAfterFinished: 30
     spec:
       containers:
       - name: test-darah
