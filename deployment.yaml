@@ -10,6 +10,10 @@ spec:
       containers:
       - name: test-darah
         image: gcr.io/PROJECT_ID/IMAGE:TAG
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
         command: ["python",
                   "test.py"]
       restartPolicy: Never
