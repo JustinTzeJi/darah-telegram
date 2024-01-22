@@ -92,4 +92,4 @@ jobs:
         # kubectl rollout status job/$DEPLOYMENT_NAME
         sleep 10
         # kubectl get services -o wide
-        kubectl wait --for=condition=complete job/test-darah
+        kubectl wait --for=condition=complete --timeout=5m job/test-darah
