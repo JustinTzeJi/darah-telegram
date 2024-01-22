@@ -4,7 +4,7 @@ metadata:
   name: the-service
 spec:
   selector:
-    deployment: hello
+    deployment: test-darah
   type: LoadBalancer
   ports:
   - protocol: TCP
