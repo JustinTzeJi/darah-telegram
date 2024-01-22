@@ -1,21 +1,15 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: batch/v1
+kind: Job
 metadata:
   name: test-darah
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      deployment: test-darah
   template:
-    metadata:
-      labels:
-        deployment: test-darah
+    # This is the pod template
     spec:
       containers:
-      - name: the-container
+      - name: test-darah
         image: gcr.io/PROJECT_ID/IMAGE:TAG
         command: ["python",
                   "test.py"]
-        ports:
-        - containerPort: 8080
+      restartPolicy: Never
+    # The pod template ends here
