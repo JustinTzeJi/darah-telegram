@@ -12,8 +12,8 @@ spec:
         image: gcr.io/PROJECT_ID/IMAGE:TAG
         resources:
           requests:
-            cpu: 100m
-            memory: 100Mi
+            cpu: 0.25 vCPU
+            memory: 0.5 GiB
         command: ["python",
                   "test.py"]
       restartPolicy: Never
