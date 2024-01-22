@@ -88,6 +88,7 @@ jobs:
         pwd
         ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
         ./kustomize build . | kubectl apply -f -
-        kubectl rollout status app/$DEPLOYMENT_NAME
         kubectl get services -o wide
+        kubectl rollout status app/$DEPLOYMENT_NAME
+        # kubectl get services -o wide
         kubectl wait --for=condition=ready pod -l app=test-darah
