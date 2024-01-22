@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:test-darah
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: test-darah
+  template:
+    metadata:
+      labels:
+        deployment: test-darah
+    spec:
+      containers:
+      - name: the-container
+        image: gcr.io/articulate-case-410317/test-darah:latest
+        command: ["echo",
+                  "abc"]
+        ports:
+        - containerPort: 8080
