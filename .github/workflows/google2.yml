@@ -85,14 +85,16 @@ jobs:
         curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
         chmod u+x ./kustomize
     # Deploy the Docker image to the GKE cluster
-    - name: Set DATA INGEST commands
-      uses: mikefarah/yq@master
-      with:
-        cmd: yq -i '.spec.template.spec.containers[0].command |= ["python","data_ingest.py"] style="double"' 'deployment.yaml'
+    # - name: Set DATA INGEST commands
+    #   uses: mikefarah/yq@master
+    #   with:
+    #     cmd: yq -i '.spec.template.spec.containers[0].command |= ["python","data_ingest.py"] style="double"' 'deployment.yaml'
         
     - name: DATA INGEST
       run: |-
         # replacing the image name in the k8s template
+        wget https://github.com/mikefarah/yq/releases/download/${VERSION}/${BINARY}.tar.gz -O - |tar xz && mv ${BINARY} /usr/bin/yq
+        yq -i '.spec.template.spec.containers[0].command |= ["python","data_ingest.py"] style="double"' 'deployment.yaml'
         cat deployment.yaml
         ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
         ./kustomize build . | kubectl apply -f -
