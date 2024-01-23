@@ -88,7 +88,7 @@ jobs:
     - name: Set deploy_1 commands
       uses: mikefarah/yq@master
       with:
-        cmd: yq -i '.spec.template.spec.containers[0].command = "["echo","testing"]"' 'deployment.yaml'
+        cmd: yq -i '.spec.template.spec.containers[0].command = ["echo","testing"] style="double"' 'deployment.yaml'
         
     - name: Set deploy_1 name
       uses: mikefarah/yq@master
