@@ -1,10 +1,10 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: test-darah
+  name: darah-telegram
 spec:
   selector:
-    deployment: test-darah
+    deployment: darah-telegram
   type: LoadBalancer
   ports:
   - protocol: TCP

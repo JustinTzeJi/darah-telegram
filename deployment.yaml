@@ -1,14 +1,14 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: test-darah
+  name: darah-telegram
 spec:
   ttlSecondsAfterFinished: 30
   template:
     # This is the pod template
     spec:
       containers:
-      - name: test-darah
+      - name: darah-telegram
         image: gcr.io/PROJECT_ID/IMAGE:TAG
         resources:
           requests:

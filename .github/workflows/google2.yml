@@ -19,15 +19,16 @@ env:
   GAR_LOCATION: us-central1 # TODO: update region of the Artifact Registry
   GKE_CLUSTER: cluster-1    # TODO: update to cluster name
   GKE_ZONE: us-central1   # TODO: update to cluster zone
-  DEPLOYMENT_NAME: test-darah # TODO: update to deployment name
+  DEPLOYMENT_NAME: darah-telegram # TODO: update to deployment name
   REPOSITORY: samples # TODO: update to Artifact Registry docker repository
-  IMAGE: test-darah
+  IMAGE: darah-telegram
+  
 
 jobs:
   setup-build-publish-deploy:
     name: Setup, Build, Publish, and Deploy
     runs-on: ubuntu-latest
-    environment: test
+    environment: dev
 
     permissions:
       contents: 'read'
@@ -66,10 +67,12 @@ jobs:
     # Build the Docker image
     - name: Build
       run: |-
+        echo '${{ secrets.GCP_CREDENTIALS }}' >> creds.json
         docker build \
           --tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
+          --secret id=creds,src=creds.json \
           .
         docker tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" "gcr.io/$PROJECT_ID/$IMAGE:latest"
     # Push the Docker image to Google Artifact Registry
@@ -82,14 +85,37 @@ jobs:
         curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
         chmod u+x ./kustomize
     # Deploy the Docker image to the GKE cluster
-    - name: Deploy
+    - name: Set DATA INGEST commands
+      uses: mikefarah/yq@master
+      with:
+        cmd: yq -i '.spec.template.spec.containers[0].command |= ["python","data_ingest.py"] style="double"' 'deployment.yaml'
+        
+    - name: DATA INGEST
       run: |-
         # replacing the image name in the k8s template
-        pwd
+        cat deployment.yaml
         ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
         ./kustomize build . | kubectl apply -f -
         kubectl get services -o wide
         # kubectl rollout status job/$DEPLOYMENT_NAME
         sleep 10
         # kubectl get services -o wide
-        kubectl wait --for=condition=complete --timeout=5m job/test-darah
+        kubectl wait --for=condition=complete --timeout=5m job/darah-telegram
+   
+    # Deploy the Docker image to the GKE cluster
+    # - name: Set deploy_2 commands
+    #   uses: mikefarah/yq@master
+    #   with:
+    #     cmd: yq -i '.spec.template.spec.containers[0].command |= ["python","test.py"] style="double"' 'deployment.yaml'
+        
+    # - name: Deploy_2
+    #   run: |-
+    #     # replacing the image name in the k8s template
+    #     pwd
+    #     ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
+    #     ./kustomize build . | kubectl apply -f -
+    #     kubectl get services -o wide
+    #     # kubectl rollout status job/$DEPLOYMENT_NAME
+    #     sleep 10
+    #     # kubectl get services -o wide
+    #     kubectl wait --for=condition=complete --timeout=5m job/darah-telegram
