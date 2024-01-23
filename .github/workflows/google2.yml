@@ -98,7 +98,7 @@ jobs:
     - name: Deploy_1
       run: |-
         # replacing the image name in the k8s template
-        pwd
+        cat deployment.yaml
         ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
         ./kustomize build . | kubectl apply -f -
         kubectl get services -o wide
