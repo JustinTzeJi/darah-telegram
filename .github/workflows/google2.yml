@@ -111,7 +111,7 @@ jobs:
     - name: Set deploy_2 commands
       uses: mikefarah/yq@master
       with:
-        cmd: yq -i '.spec.template.spec.containers[0].command = "["python","test.py"]"' 'deployment.yaml'
+        cmd: yq -i '.spec.template.spec.containers[0].command = ["python","test.py"] style="double"' 'deployment.yaml'
         
     - name: Set deploy_2 name
       uses: mikefarah/yq@master
