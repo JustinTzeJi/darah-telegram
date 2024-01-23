@@ -67,12 +67,12 @@ jobs:
     # Build the Docker image
     - name: Build
       run: |-
-        echo '${{ secrets.GCP_CREDENTIALS }}' >> /root/.cred/creds.json
+        echo '${{ secrets.GCP_CREDENTIALS }}' >> creds.json
         docker build \
           --tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
-          --secret id=creds,src=/root/.cred/creds.json .
+          --secret id=creds,src=creds.json .
           .
         docker tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" "gcr.io/$PROJECT_ID/$IMAGE:latest"
     # Push the Docker image to Google Artifact Registry
