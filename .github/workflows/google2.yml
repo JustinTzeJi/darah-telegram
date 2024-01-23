@@ -22,6 +22,7 @@ env:
   DEPLOYMENT_NAME: test-darah # TODO: update to deployment name
   REPOSITORY: samples # TODO: update to Artifact Registry docker repository
   IMAGE: test-darah
+  
 
 jobs:
   setup-build-publish-deploy:
@@ -66,10 +67,12 @@ jobs:
     # Build the Docker image
     - name: Build
       run: |-
+        echo '${{ secrets.GCP_CREDENTIALS }}' >> /root/.cred/creds.json
         docker build \
           --tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
+          --secret id=creds,src=/root/.cred/creds.json .
           .
         docker tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" "gcr.io/$PROJECT_ID/$IMAGE:latest"
     # Push the Docker image to Google Artifact Registry
