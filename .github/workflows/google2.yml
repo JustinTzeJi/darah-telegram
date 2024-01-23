@@ -85,7 +85,40 @@ jobs:
         curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
         chmod u+x ./kustomize
     # Deploy the Docker image to the GKE cluster
-    - name: Deploy
+    - name: Set deploy_1 commands
+      uses: mikefarah/yq@master
+      with:
+        cmd: yq -i '.spec.template.spec.containers[0].command = "["echo","testing"]"' 'deployment.yaml'
+        
+    - name: Set deploy_1 name
+      uses: mikefarah/yq@master
+      with:
+        cmd: yq -i '.spec.tamplate.spec.containers[0].name = "echo"' 'deployment.yaml'
+        
+    - name: Deploy_1
+      run: |-
+        # replacing the image name in the k8s template
+        pwd
+        ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
+        ./kustomize build . | kubectl apply -f -
+        kubectl get services -o wide
+        # kubectl rollout status job/$DEPLOYMENT_NAME
+        sleep 10
+        # kubectl get services -o wide
+        kubectl wait --for=condition=complete --timeout=5m job/test-darah
+   
+    # Deploy the Docker image to the GKE cluster
+    - name: Set deploy_2 commands
+      uses: mikefarah/yq@master
+      with:
+        cmd: yq -i '.spec.template.spec.containers[0].command = "["python","test.py"]"' 'deployment.yaml'
+        
+    - name: Set deploy_2 name
+      uses: mikefarah/yq@master
+      with:
+        cmd: yq -i '.spec.tamplate.spec.containers[0].name = "tester"' 'deployment.yaml'
+        
+    - name: Deploy_2
       run: |-
         # replacing the image name in the k8s template
         pwd
