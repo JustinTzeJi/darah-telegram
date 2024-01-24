@@ -97,10 +97,10 @@ jobs:
         ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
         ./kustomize build . | kubectl apply -f -
         kubectl get services -o wide
-        # kubectl rollout status job/$DEPLOYMENT_NAME
+        # kubectl rollout status job/$darah-telegram-data-ingest
         sleep 10
         # kubectl get services -o wide
-        kubectl wait --for=condition=complete --timeout=5m job/darah-telegram
+        kubectl wait --for=condition=complete --timeout=5m job/darah-telegram-data-ingest
    
     # Deploy the Docker image to the GKE cluster
     # - name: Set deploy_2 commands
