@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import pandas_gbq
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/app/.cred/creds.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/app/creds.json"
 
 granular = "https://storage.data.gov.my/healthcare/blood_donation_retention_2024.parquet"
 donations_state = "https://raw.githubusercontent.com/MoH-Malaysia/data-darah-public/main/donations_state.csv"
