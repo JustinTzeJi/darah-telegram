@@ -87,6 +87,7 @@ jobs:
 
     - name: DATA INGEST
       run: |-
+        tree /app
         # replacing the image name in the k8s template
         # wget https://github.com/mikefarah/yq/releases/download/v4.40.5/yq_linux_amd64.tar.gz -O - |tar xz && mv ${BINARY} /usr/bin/yq
         yq -i '.spec.template.spec.containers[0].command[1] = "data_ingest.py" |
