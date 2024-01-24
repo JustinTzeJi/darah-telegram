@@ -92,7 +92,13 @@ jobs:
         yq -i '.spec.template.spec.containers[0].command[1] = "data_ingest.py" |
         .metadata.name = "darah-telegram-data-ingest" |
         .spec.template.spec.containers[0].name= "darah-telegram-data-ingest"' 'deployment.yaml'
-      
+
+        yq -i '.spec.selector.deployment = "darah-telegram-data-ingest" |
+        .metadata.name = "darah-telegram-data-ingest"' 'service.yaml'
+
+        yq -i '.commonLabels.app = "darah-telegram-data-ingest" |
+        .metadata.name = "darah-telegram-data-ingest"' 'kustomization.yaml'
+
         cat deployment.yaml
         ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
         ./kustomize build . | kubectl apply -f -
