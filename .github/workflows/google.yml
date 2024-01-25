@@ -15,7 +15,7 @@ name: DEV- Build and Deploy to GKE (SCHEDULED)
 on:
   schedule:
     - cron:  '0 2 * * *'
-    
+
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GAR_LOCATION: us-central1 # TODO: update region of the Artifact Registry
@@ -110,7 +110,7 @@ jobs:
         # kubectl rollout status job/$darah-telegram-data-ingest
         sleep 10
         # kubectl get services -o wide
-        kubectl wait --for=condition=complete --timeout=5m job/darah-telegram-data-ingest
+        kubectl wait --for=condition=complete --timeout=35m job/darah-telegram-data-ingest
 
     - name: DATA ANALYTICS
       run: |-
@@ -133,5 +133,5 @@ jobs:
         # kubectl rollout status job/$darah-telegram-data-analytics
         sleep 10
         # kubectl get services -o wide
-        kubectl wait --for=condition=complete --timeout=5m job/darah-telegram-data-analytics
+        kubectl wait --for=condition=complete --timeout=35m job/darah-telegram-data-analytics
   

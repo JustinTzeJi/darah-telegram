@@ -230,7 +230,7 @@ def recurrency():
         .value_counts()
         .reset_index()
         .sort_index()
-        .rename(columns={"index": "donation_num", "donation_num": "donor_num"})
+        .rename(columns={"index": "donation_num", "count": "donor_num"})
     )
 
     recurrency_rates_df_merged = recurrency_rates_df_past.merge(
