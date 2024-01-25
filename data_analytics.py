@@ -204,9 +204,9 @@ def recurrency():
         .groupby(by="donor_id")
         .max()["donation_num"]
         .value_counts()
+        .sort_index()
         .reset_index()
         .rename(columns={"index": "donation_num", "donation_num": "donor_num"})
-        .sort_values(by="donation_num")
     )
     recurrency_rates_df_today[
         "donation_num"
@@ -227,8 +227,8 @@ def recurrency():
         ]["donation_num"]
         .value_counts()
         .reset_index()
+        .sort_index()
         .rename(columns={"index": "donation_num", "donation_num": "donor_num"})
-        .sort_values(by="donation_num")
     )
 
     recurrency_rates_df_merged = recurrency_rates_df_past.merge(
