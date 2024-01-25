@@ -283,7 +283,7 @@ def recurrency():
 
     fig = make_subplots(
         rows=1,
-        columns=2,
+        cols=2,
         subplot_titles=[
             "Number of donations by nth time donors",
             "Percentage of recurrency by nth time donors",
