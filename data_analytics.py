@@ -1,8 +1,7 @@
 import os
 from dateutil.relativedelta import relativedelta
-from datetime import datetime
+from collections import defaultdict
 import pandas as pd
-import pickle
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import requests
@@ -100,7 +99,7 @@ def state_cumulative_analytics():
     states = state_cumulative.state.unique()
     fig = make_subplots(rows=5, cols=3, subplot_titles=states)
 
-    state_stat = {}
+    state_stat = defaultdict(dict)
     i = 0
     for k in range(1, 6):
         for j in range(1, 4):
