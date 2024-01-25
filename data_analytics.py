@@ -208,6 +208,8 @@ def recurrency():
         .reset_index()
         .rename(columns={"index": "donation_num", "donation_num": "donor_num"})
     )
+
+    print(recurrency_rates_df_today.head(10))
     recurrency_rates_df_today[
         "donation_num"
     ] -= 1  # to show the number of donations made before the last donation
