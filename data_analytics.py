@@ -206,7 +206,7 @@ def recurrency():
         .value_counts()
         .sort_index()
         .reset_index()
-        .rename(columns={"index": "donation_num", "donation_num": "donor_num"})
+        .rename(columns={"index": "donation_num", "count": "donor_num"})
     )
 
     print(recurrency_rates_df_today.head(10))

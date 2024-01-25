@@ -15,7 +15,7 @@ name: DEV- Build and Deploy to GKE (SCHEDULED)
 on:
   schedule:
     - cron:  '0 2 * * *'
-
+    
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GAR_LOCATION: us-central1 # TODO: update region of the Artifact Registry
@@ -70,6 +70,8 @@ jobs:
     - name: Build
       run: |-
         echo '${{ secrets.GCP_CREDENTIALS }}' >> creds.json
+        echo '${{ secrets.TELEGRAM_TOKEN }}' >> token.txt
+        echo '${{ secrets.TELEGRAM_CHANNEL_ID }}' >> channel.txt
         docker build \
           --tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
@@ -109,21 +111,27 @@ jobs:
         sleep 10
         # kubectl get services -o wide
         kubectl wait --for=condition=complete --timeout=5m job/darah-telegram-data-ingest
-   
-    # Deploy the Docker image to the GKE cluster
-    # - name: Set deploy_2 commands
-    #   uses: mikefarah/yq@master
-    #   with:
-    #     cmd: yq -i '.spec.template.spec.containers[0].command |= ["python","test.py"] style="double"' 'deployment.yaml'
-        
-    # - name: Deploy_2
-    #   run: |-
-    #     # replacing the image name in the k8s template
-    #     pwd
-    #     ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
-    #     ./kustomize build . | kubectl apply -f -
-    #     kubectl get services -o wide
-    #     # kubectl rollout status job/$DEPLOYMENT_NAME
-    #     sleep 10
-    #     # kubectl get services -o wide
-    #     kubectl wait --for=condition=complete --timeout=5m job/darah-telegram
+
+    - name: DATA ANALYTICS
+      run: |-
+        # replacing the image name in the k8s template
+        # wget https://github.com/mikefarah/yq/releases/download/v4.40.5/yq_linux_amd64.tar.gz -O - |tar xz && mv ${BINARY} /usr/bin/yq
+        yq -i '.spec.template.spec.containers[0].command[1] = "data_analytics.py" |
+        .metadata.name = "darah-telegram-data-analytics" |
+        .spec.template.spec.containers[0].name= "darah-telegram-data-analytics"' 'deployment.yaml'
+
+        yq -i '.spec.selector.deployment = "darah-telegram-data-analytics" |
+        .metadata.name = "darah-telegram-data-analytics"' 'service.yaml'
+
+        yq -i '.commonLabels.app = "darah-telegram-data-analytics" |
+        .metadata.name = "darah-telegram-data-analytics"' 'kustomization.yaml'
+
+        cat deployment.yaml
+        ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
+        ./kustomize build . | kubectl apply -f -
+        kubectl get services -o wide
+        # kubectl rollout status job/$darah-telegram-data-analytics
+        sleep 10
+        # kubectl get services -o wide
+        kubectl wait --for=condition=complete --timeout=5m job/darah-telegram-data-analytics
+  
