@@ -68,6 +68,8 @@ jobs:
     - name: Build
       run: |-
         echo '${{ secrets.GCP_CREDENTIALS }}' >> creds.json
+        echo '${{ secrets.TELEGRAM_TOKEN }}' >> token.txt
+        echo '${{ secrets.TELEGRAM_CHANNEL_ID }}' >> channel.txt
         docker build \
           --tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
