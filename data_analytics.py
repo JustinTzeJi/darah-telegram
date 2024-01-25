@@ -364,6 +364,7 @@ def send__telegram_photo(token, chat_id, image_path, image_caption=""):
     with open(image_path, "rb") as image_file:
         ret = requests.post(url, files={"photo": image_file})
     print(ret.json())
+    print(token, chat_id, image_path, image_caption)
     return ret.json()
 
 
