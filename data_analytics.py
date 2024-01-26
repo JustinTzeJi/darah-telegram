@@ -358,7 +358,7 @@ def recurrency():
 
 
 def send__telegram_photo(token, chat_id, image_path, image_caption=""):
-    url = f"https:\\api.telegram.org/bot{token.strip()}/sendPhoto?chat_id={chat_id.strip()}&caption={image_caption.strip()}&parse_mode=MarkdownV2"
+    url = f"https://api.telegram.org/bot{token.strip()}/sendPhoto?chat_id={chat_id.strip()}&caption={image_caption.strip()}&parse_mode=MarkdownV2"
     print(url)
     with open(image_path, "rb") as image_file:
         ret = requests.post(url, files={"photo": image_file})
