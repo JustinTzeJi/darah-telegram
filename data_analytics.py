@@ -85,7 +85,7 @@ def malaysia_cumulative_analytics():
     fig.write_image("malaysia_cumulative.png", width=1200, height=500)
 
     message = f"""*Total Daily Donations \\({actual["date"].iat[-1]}\\):* {actual["daily"].iat[-1]}
-*Year-to-date cumulative donations growth \\(vs {actual["date"].iat[-1] - relativedelta(years=1)}\\):* {ytd_growth*100:.2f}% {emoji}"""
+*YTD cumulative donations growth \\(vs {actual["date"].iat[-1] - relativedelta(years=1)}\\):* {ytd_growth*100:.2f}% {emoji}"""
     return message
 
 
@@ -345,14 +345,14 @@ def recurrency():
     )
     print(recurrency_rates_df_merged.sort_values(by="perc_recurrent", ascending=False))
 
-    fig.write_image("reccurence_stat.png", width=800, height=500)
+    fig.write_image("reccurence_stat.png", width=1000, height=500)
 
     message = f"""__*On {recurrency_rates_df.visit_date.max()}:*__
 *Recurring 1st time donors:* {recurrency_rates_df_merged[recurrency_rates_df_merged.amount_of_donations_made=="1"]["total_donors"].iloc[0]} \\({recurrency_rates_df_merged[recurrency_rates_df_merged.amount_of_donations_made=="1"]["perc_recurrent"].iloc[0]:.2f}% of all 1st time donors\\)
 
 *Most Active donor groups:*
-- Highest recurrence percentage: {recurrency_rates_df_merged.sort_values(by="perc_recurrent",ascending=False).amount_of_donations_made.iloc[0]} \\({recurrency_rates_df_merged.sort_values(by="perc_recurrent",ascending=False).perc_recurrent.iloc[0]:.2f}%\\)
-- Highest recurrence amount of donors: {recurrency_rates_df_merged.sort_values(by="total_donors",ascending=False).amount_of_donations_made.iloc[0]} \\({recurrency_rates_df_merged.sort_values(by="total_donors",ascending=False).total_donors.iloc[0]} donors\\)"""
+- Highest recurrence percentage: Donors with {recurrency_rates_df_merged.sort_values(by="perc_recurrent",ascending=False).amount_of_donations_made.iloc[0]} donations \\({recurrency_rates_df_merged.sort_values(by="perc_recurrent",ascending=False).perc_recurrent.iloc[0]:.2f}%\\)
+- Highest recurrence amount of donors: Donors with {recurrency_rates_df_merged.sort_values(by="total_donors",ascending=False).amount_of_donations_made.iloc[0]} donations \\({recurrency_rates_df_merged.sort_values(by="total_donors",ascending=False).total_donors.iloc[0]} donors\\)"""
     return message
 
 
