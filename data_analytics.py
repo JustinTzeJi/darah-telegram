@@ -5,7 +5,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import requests
-
+import re
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/app/creds.json"
 
@@ -186,7 +186,7 @@ def state_cumulative_analytics():
                 state_stat, key=lambda x: state_stat[x]["daily"], reverse=True
             )
         ]
-    )
+    ).replace("-", "\\-")
     return message
 
 
