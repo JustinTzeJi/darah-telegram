@@ -86,7 +86,7 @@ def malaysia_cumulative_analytics():
     fig.write_image("malaysia_cumulative.png", width=1200, height=500)
 
     message = f"""*Total Daily Donations \\({actual["date"].iat[-1]}\\):* {actual["daily"].iat[-1]}
-*Year\\-to\\-date cumulative donations growth \\(vs {actual["date"].iat[-1] - relativedelta(years=1)}\\):* {ytd_growth*100:.2f}% {emoji}"""
+*Year-to-date cumulative donations growth \\(vs {actual["date"].iat[-1] - relativedelta(years=1)}\\):* {ytd_growth*100:.2f}% {emoji}"""
     return message
 
 
@@ -186,7 +186,7 @@ def state_cumulative_analytics():
                 state_stat, key=lambda x: state_stat[x]["daily"], reverse=True
             )
         ]
-    ).replace("-", "\\-")
+    )
     return message
 
 
@@ -352,13 +352,13 @@ def recurrency():
 *Recurring 1st time donors:* {recurrency_rates_df_merged[recurrency_rates_df_merged.amount_of_donations_made=="1"]["total_donors"].iloc[0]} \\({recurrency_rates_df_merged[recurrency_rates_df_merged.amount_of_donations_made=="1"]["perc_recurrent"].iloc[0]:.2f}% of all 1st time donors\\)
 
 *Most Active donor groups:*
-\\- Highest recurrence percentage: {recurrency_rates_df_merged.sort_values(by="perc_recurrent",ascending=False).amount_of_donations_made.iloc[0]} \\({recurrency_rates_df_merged.sort_values(by="perc_recurrent",ascending=False).perc_recurrent.iloc[0]:.2f}%\\)
-\\- Highest recurrence amount of donors: {recurrency_rates_df_merged.sort_values(by="total_donors",ascending=False).amount_of_donations_made.iloc[0]} \\({recurrency_rates_df_merged.sort_values(by="total_donors",ascending=False).total_donors.iloc[0]} donors\\)"""
+- Highest recurrence percentage: {recurrency_rates_df_merged.sort_values(by="perc_recurrent",ascending=False).amount_of_donations_made.iloc[0]} \\({recurrency_rates_df_merged.sort_values(by="perc_recurrent",ascending=False).perc_recurrent.iloc[0]:.2f}%\\)
+- Highest recurrence amount of donors: {recurrency_rates_df_merged.sort_values(by="total_donors",ascending=False).amount_of_donations_made.iloc[0]} \\({recurrency_rates_df_merged.sort_values(by="total_donors",ascending=False).total_donors.iloc[0]} donors\\)"""
     return message
 
 
 def send__telegram_photo(token, chat_id, image_path, image_caption=""):
-    url = f"https://api.telegram.org/bot{token.strip()}/sendPhoto?chat_id={chat_id.strip()}&caption={image_caption.strip()}&parse_mode=MarkdownV2"
+    url = f"https://api.telegram.org/bot{token.strip()}/sendPhoto?chat_id={chat_id.strip()}&caption={image_caption.replace("-", "\\-").strip()}&parse_mode=MarkdownV2"
     print(url)
     with open(image_path, "rb") as image_file:
         ret = requests.post(url, files={"photo": image_file})
