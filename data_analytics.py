@@ -5,7 +5,6 @@ import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import requests
-import re
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/app/creds.json"
 
@@ -358,7 +357,8 @@ def recurrency():
 
 
 def send__telegram_photo(token, chat_id, image_path, image_caption=""):
-    url = f"https://api.telegram.org/bot{token.strip()}/sendPhoto?chat_id={chat_id.strip()}&caption={image_caption.replace("-", "\\-").strip()}&parse_mode=MarkdownV2"
+    backlash = "\\-"
+    url = f"https://api.telegram.org/bot{token.strip()}/sendPhoto?chat_id={chat_id.strip()}&caption={image_caption.replace('-', backlash).strip()}&parse_mode=MarkdownV2"
     print(url)
     with open(image_path, "rb") as image_file:
         ret = requests.post(url, files={"photo": image_file})
