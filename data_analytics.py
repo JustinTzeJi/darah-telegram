@@ -177,8 +177,7 @@ def state_cumulative_analytics():
     )
     fig.write_image("state_cumulative.png", width=1200, height=1000)
     state_stat = dict(state_stat)
-    message = f"""Top 3 States: Daily Donations (YTD comparison growth)
-
+    message = f"""__*Top 3 States: Daily Donations (YTD comparison growth)*__
 	"""
     message += "\n".join(
         [
@@ -349,17 +348,17 @@ def recurrency():
 
     fig.write_image("reccurence_stat.png", width=800, height=500)
 
-    message = f"""On {recurrency_rates_df.visit_date.max()}:
-Recurring 1st time donors: {recurrency_rates_df_merged[recurrency_rates_df_merged.amount_of_donations_made=="1"]["total_donors"].iloc[0]} ({recurrency_rates_df_merged[recurrency_rates_df_merged.amount_of_donations_made=="1"]["perc_recurrent"].iloc[0]:.2f}% of all 1st time donors)
+    message = f"""__*On {recurrency_rates_df.visit_date.max()}:*__
+*Recurring 1st time donors:* {recurrency_rates_df_merged[recurrency_rates_df_merged.amount_of_donations_made=="1"]["total_donors"].iloc[0]} ({recurrency_rates_df_merged[recurrency_rates_df_merged.amount_of_donations_made=="1"]["perc_recurrent"].iloc[0]:.2f}% of all 1st time donors)
 
-Most Active donor groups:
+*Most Active donor groups:*
 - Highest recurrence percentage: {recurrency_rates_df_merged.sort_values(by="perc_recurrent",ascending=False).amount_of_donations_made.iloc[0]} ({recurrency_rates_df_merged.sort_values(by="perc_recurrent",ascending=False).perc_recurrent.iloc[0]:.2f}%)
 - Highest recurrence amount of donors: {recurrency_rates_df_merged.sort_values(by="total_donors",ascending=False).amount_of_donations_made.iloc[0]} ({recurrency_rates_df_merged.sort_values(by="total_donors",ascending=False).total_donors.iloc[0]} donors)"""
     return message
 
 
 def send__telegram_photo(token, chat_id, image_path, image_caption=""):
-    url = f"https://api.telegram.org/bot{token.strip()}/sendPhoto?chat_id={chat_id.strip()}&caption={image_caption.strip()}"
+    url = f"https://api.telegram.org/bot{token.strip()}/sendPhoto?chat_id={chat_id.strip()}&caption={image_caption.strip()}&parse_mode=MarkdownV2"
     print(url)
     with open(image_path, "rb") as image_file:
         ret = requests.post(url, files={"photo": image_file})
