@@ -86,7 +86,7 @@ def malaysia_cumulative_analytics():
     fig.write_image("malaysia_cumulative.png", width=1200, height=500)
 
     message = f"""Total Daily Donations ({actual["date"].iat[-1]}): {actual["daily"].iat[-1]}
-Year-to-date cumulative donations growth (vs {actual["date"].iat[-1] - relativedelta(years=1)}: ytd_growth {emoji}"""
+Year-to-date cumulative donations growth (vs {actual["date"].iat[-1] - relativedelta(years=1)}: {ytd_growth} {emoji}"""
     return message
 
 
