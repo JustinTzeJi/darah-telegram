@@ -345,15 +345,16 @@ def recurrency():
         1,
         2,
     )
+    print(recurrency_rates_df_merged.sort_values(by="perc_recurrent", ascending=False))
 
-    fig.write_image("reccurence_stat.png", width=1200, height=1000)
+    fig.write_image("reccurence_stat.png", width=800, height=500)
 
     message = f"""On {recurrency_rates_df.visit_date.max()}:
-Recurring 1st time donors: {recurrency_rates_df_merged[recurrency_rates_df_merged.amount_of_donations_made=="1"]["total_donors"].iloc[0]} ({recurrency_rates_df_merged[recurrency_rates_df_merged.amount_of_donations_made=="1"]["perc_recurrent"].iloc[0]} of all 1st time donors)
+Recurring 1st time donors: {recurrency_rates_df_merged[recurrency_rates_df_merged.amount_of_donations_made=="1"]["total_donors"].iloc[0]} ({recurrency_rates_df_merged[recurrency_rates_df_merged.amount_of_donations_made=="1"]["perc_recurrent"].iloc[0]:.2f}% of all 1st time donors)
 
 Most Active donor groups:
-- Highest recurrence percentage: {recurrency_rates_df_merged.sort_values(by="perc_recurrent",ascending=False).amount_of_donations_made.iloc[0]} ({recurrency_rates_df_merged.sort_values(by="perc_recurrent",ascending=False).perc_recurrent.iloc[0]}%)
-- Highest recurrence amount of donors: {recurrency_rates_df_merged.sort_values(by="total_donors",ascending=False).amount_of_donations_made.iloc[0]} ({recurrency_rates_df_merged.sort_values(by="total_donors",ascending=False).total_donors.iloc[0]}%)"""
+- Highest recurrence percentage: {recurrency_rates_df_merged.sort_values(by="perc_recurrent",ascending=False).amount_of_donations_made.iloc[0]} ({recurrency_rates_df_merged.sort_values(by="perc_recurrent",ascending=False).perc_recurrent.iloc[0]:.2f}%)
+- Highest recurrence amount of donors: {recurrency_rates_df_merged.sort_values(by="total_donors",ascending=False).amount_of_donations_made.iloc[0]} ({recurrency_rates_df_merged.sort_values(by="total_donors",ascending=False).total_donors.iloc[0]} donors)"""
     return message
 
 
