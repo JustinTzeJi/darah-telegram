@@ -177,7 +177,7 @@ def state_cumulative_analytics():
     fig.write_image("state_cumulative.png", width=1200, height=1000)
     state_stat = dict(state_stat)
     message = f"""__*Top 3 States: Daily Donations \\(YTD comparison growth\\)*__
-	"""
+"""
     message += "\n".join(
         [
             f'{s}: {state_stat[s]["daily"]}  \\({state_stat[s]["emoji"]}{state_stat[s]["ytd_growth"]*100:.1f}%\\)'
@@ -282,8 +282,8 @@ def recurrency():
         rows=1,
         cols=2,
         subplot_titles=[
-            "Number of donations by nth time donors",
-            "Percentage of recurrency by nth time donors",
+            f"Composition of Recurring Donors \n on {recurrency_rates_df.visit_date.max()}",
+            f"Recurrency rate of donors of \n each category on {recurrency_rates_df.visit_date.max()}",
         ],
         column_widths=[0.3, 0.7],
         specs=[[{"type": "pie"}, {"type": "bar"}]],
@@ -343,16 +343,28 @@ def recurrency():
         1,
         2,
     )
+    fig.update_xaxes(
+        title_text=f"Donor Category (Number of donotions made prior to {recurrency_rates_df.visit_date.max()})",
+        row=1,
+        col=2,
+    )
+    fig.update_yaxes(title_text="Recurrency rate(%)", row=1, col=2)
+    fig.update_layout(legend_title_text="Donor Categories")
     print(recurrency_rates_df_merged.sort_values(by="perc_recurrent", ascending=False))
 
     fig.write_image("reccurence_stat.png", width=1000, height=500)
 
-    message = f"""__*On {recurrency_rates_df.visit_date.max()}:*__
-*Recurring 1st time donors:* {recurrency_rates_df_merged[recurrency_rates_df_merged.amount_of_donations_made=="1"]["total_donors"].iloc[0]} \\({recurrency_rates_df_merged[recurrency_rates_df_merged.amount_of_donations_made=="1"]["perc_recurrent"].iloc[0]:.2f}% of all 1st time donors\\)
+    message = f"""Recurring Donors are categorized based on their previous donation amounts //(eg: `1` refers to 1st time donors, and 0.05% of reccurency rate refers to 0.05% of 1st time donors donated for the second time today.//)
+    
+__*On {recurrency_rates_df.visit_date.max()}:*__
+*Number of recurring 1st time donors:*
+{recurrency_rates_df_merged[recurrency_rates_df_merged.amount_of_donations_made=="1"]["total_donors"].iloc[0]} \\({recurrency_rates_df_merged[recurrency_rates_df_merged.amount_of_donations_made=="1"]["perc_recurrent"].iloc[0]:.2f}% of all 1st time donors\\)
 
-*Most Active donor groups:*
-- Highest recurrence percentage: Donors with {recurrency_rates_df_merged.sort_values(by="perc_recurrent",ascending=False).amount_of_donations_made.iloc[0]} donations \\({recurrency_rates_df_merged.sort_values(by="perc_recurrent",ascending=False).perc_recurrent.iloc[0]:.2f}%\\)
-- Highest recurrence amount of donors: Donors with {recurrency_rates_df_merged.sort_values(by="total_donors",ascending=False).amount_of_donations_made.iloc[0]} donations \\({recurrency_rates_df_merged.sort_values(by="total_donors",ascending=False).total_donors.iloc[0]} donors\\)"""
+*Donor category with highest recurrency rate:* 
+Donors with {recurrency_rates_df_merged.sort_values(by="perc_recurrent",ascending=False).amount_of_donations_made.iloc[0]} prior donations \\({recurrency_rates_df_merged.sort_values(by="perc_recurrent",ascending=False).perc_recurrent.iloc[0]:.2f}%\\)
+
+*Donor category with highest amount of donors:* 
+Donors with {recurrency_rates_df_merged.sort_values(by="total_donors",ascending=False).amount_of_donations_made.iloc[0]} prior donations \\({recurrency_rates_df_merged.sort_values(by="total_donors",ascending=False).total_donors.iloc[0]} donors\\)"""
     return message
 
 
