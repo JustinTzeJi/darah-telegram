@@ -287,6 +287,7 @@ def recurrency():
         ],
         column_widths=[0.3, 0.7],
         specs=[[{"type": "pie"}, {"type": "bar"}]],
+        horizontal_spacing=0.4,
     )
 
     fig.add_trace(
