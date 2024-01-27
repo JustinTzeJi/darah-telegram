@@ -282,8 +282,8 @@ def recurrency():
         rows=1,
         cols=2,
         subplot_titles=[
-            f"Composition of Recurring Donors \n on {recurrency_rates_df.visit_date.max()}",
-            f"Recurrency rate of donors of \n each category on {recurrency_rates_df.visit_date.max()}",
+            f"Composition of Recurring Donors<br>on {recurrency_rates_df.visit_date.max()}",
+            f"Recurrency rate of donors of<br>each category on {recurrency_rates_df.visit_date.max()}",
         ],
         column_widths=[0.3, 0.7],
         specs=[[{"type": "pie"}, {"type": "bar"}]],
@@ -344,7 +344,7 @@ def recurrency():
         2,
     )
     fig.update_xaxes(
-        title_text=f"Donor Category (Number of donotions made prior to {recurrency_rates_df.visit_date.max()})",
+        title_text=f"Donor Category<br>(Number of donotions made prior to {recurrency_rates_df.visit_date.max()})",
         row=1,
         col=2,
     )
@@ -354,7 +354,8 @@ def recurrency():
 
     fig.write_image("reccurence_stat.png", width=1000, height=500)
 
-    message = f"""Recurring Donors are categorized based on their previous donation amounts \\(eg: `1` refers to 1st time donors, and 0.05% of reccurency rate refers to 0.05% of 1st time donors donated for the second time today.\\)
+    message = f"""Recurring Donors are categorized based on their donation amounts prior to the current date
+>\\(eg: `1` refers to 1st time donors, and 0.05% of reccurency rate refers to 0.05% of 1st time donors donated for the second time today.\\)
     
 __*On {recurrency_rates_df.visit_date.max()}:*__
 *Number of recurring 1st time donors:*
