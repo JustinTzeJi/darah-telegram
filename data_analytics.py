@@ -356,7 +356,7 @@ def recurrency():
     fig.write_image("reccurence_stat.png", width=1000, height=500)
 
     message = f"""Recurring Donors are categorized based on their donation amounts prior to the current date
->\\(eg:`1 refers to 1st time donors, and 0.05% of reccurency rate refers to 0.05% of 1st time donors donated for the second time today.\\)
+>\\(eg: 1 refers to 1st time donors, and 0.05% of reccurency rate refers to 0.05% of 1st time donors donated for the second time today.\\)
     
 __*On {recurrency_rates_df.visit_date.max()}:*__
 *Number of recurring 1st time donors:*
