@@ -1,0 +1,72 @@
+name: Build and publish to GCR
+
+on:
+  push:
+    branches:
+      -dev
+
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GAR_LOCATION: us-central1
+  GKE_CLUSTER: cluster-1
+  GKE_ZONE: us-central1
+  IMAGE: darah-telegram
+  
+
+jobs:
+  setup-build-publish:
+    name: Setup, Build, Publish
+    runs-on: ubuntu-latest
+    environment: dev
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    # Configure Workload Identity Federation and generate an access token.
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v2'
+      with:
+       credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+    - run: |-
+        gcloud --quiet auth configure-docker
+
+    # Alternative option - authentication via credentials json
+    # - id: 'auth'
+    #   uses: 'google-github-actions/auth@v0'
+    #   with:
+    #     credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+    # - name: Docker configuration
+    #   run: |-
+    #     echo ${{steps.auth.outputs.access_token}} | docker login -u oauth2accesstoken --password-stdin https://$GAR_LOCATION-docker.pkg.dev
+    # Get the GKE credentials so we can deploy to the cluster
+    - name: 'Set up GKE credentials'
+      uses: 'google-github-actions/get-gke-credentials@v2'
+      with:
+        cluster_name: ${{ env.GKE_CLUSTER }}
+        location: ${{ env.GKE_ZONE }}
+
+    # Build the Docker image
+    - name: Build
+      run: |-
+        echo '${{ secrets.GCP_CREDENTIALS }}' >> creds.json
+        echo '${{ secrets.TELEGRAM_TOKEN }}' >> token.txt
+        echo '${{ secrets.TELEGRAM_CHANNEL_ID }}' >> channel.txt
+        docker build \
+          --tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
+          --build-arg GITHUB_SHA="$GITHUB_SHA" \
+          --build-arg GITHUB_REF="$GITHUB_REF" \
+          --secret id=creds,src=creds.json \
+          .
+        docker tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" "gcr.io/$PROJECT_ID/$IMAGE:latest"
+    # Push the Docker image to Google Artifact Registry
+    - name: Publish
+      run: |-
+        docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"

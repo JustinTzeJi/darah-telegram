@@ -10,9 +10,13 @@
 #
 # For more support on how to run the workflow, please visit https://github.com/google-github-actions/setup-gcloud/tree/master/example-workflows/gke-kustomize
 
-name: DEV- Build and Deploy to GKE (MANUAL)
+name: Data Ingestion and Analytics deployment
 
-on: workflow_dispatch
+on:
+  schedule:
+    - cron:  '0 3 * * *'
+
+  workflow_dispatch:
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
@@ -25,8 +29,8 @@ env:
   
 
 jobs:
-  setup-build-publish-deploy:
-    name: Setup, Build, Publish, and Deploy
+  setup-deploy:
+    name: Setup, Deploy
     runs-on: ubuntu-latest
     environment: dev
 
@@ -45,18 +49,6 @@ jobs:
       with:
        credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
 
-    - run: |-
-        gcloud --quiet auth configure-docker
-
-    # Alternative option - authentication via credentials json
-    # - id: 'auth'
-    #   uses: 'google-github-actions/auth@v0'
-    #   with:
-    #     credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
-
-    # - name: Docker configuration
-    #   run: |-
-    #     echo ${{steps.auth.outputs.access_token}} | docker login -u oauth2accesstoken --password-stdin https://$GAR_LOCATION-docker.pkg.dev
     # Get the GKE credentials so we can deploy to the cluster
     - name: 'Set up GKE credentials'
       uses: 'google-github-actions/get-gke-credentials@v2'
@@ -64,24 +56,6 @@ jobs:
         cluster_name: ${{ env.GKE_CLUSTER }}
         location: ${{ env.GKE_ZONE }}
 
-    # Build the Docker image
-    - name: Build
-      run: |-
-        echo '${{ secrets.GCP_CREDENTIALS }}' >> creds.json
-        echo '${{ secrets.TELEGRAM_TOKEN }}' >> token.txt
-        echo '${{ secrets.TELEGRAM_CHANNEL_ID }}' >> channel.txt
-        docker build \
-          --tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
-          --build-arg GITHUB_SHA="$GITHUB_SHA" \
-          --build-arg GITHUB_REF="$GITHUB_REF" \
-          --secret id=creds,src=creds.json \
-          .
-        docker tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" "gcr.io/$PROJECT_ID/$IMAGE:latest"
-    # Push the Docker image to Google Artifact Registry
-    - name: Publish
-      run: |-
-        docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
-    # Set up kustomize
     - name: Set up Kustomize
       run: |-
         curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
@@ -108,7 +82,7 @@ jobs:
         # kubectl rollout status job/$darah-telegram-data-ingest
         sleep 10
         # kubectl get services -o wide
-        kubectl wait --for=condition=complete --timeout=20m job/darah-telegram-data-ingest
+        kubectl wait --for=condition=complete --timeout=35m job/darah-telegram-data-ingest
 
     - name: DATA ANALYTICS
       run: |-
@@ -132,21 +106,4 @@ jobs:
         sleep 10
         # kubectl get services -o wide
         kubectl wait --for=condition=complete --timeout=35m job/darah-telegram-data-analytics
-   
-    # Deploy the Docker image to the GKE cluster
-    # - name: Set deploy_2 commands
-    #   uses: mikefarah/yq@master
-    #   with:
-    #     cmd: yq -i '.spec.template.spec.containers[0].command |= ["python","test.py"] style="double"' 'deployment.yaml'
-        
-    # - name: Deploy_2
-    #   run: |-
-    #     # replacing the image name in the k8s template
-    #     pwd
-    #     ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
-    #     ./kustomize build . | kubectl apply -f -
-    #     kubectl get services -o wide
-    #     # kubectl rollout status job/$DEPLOYMENT_NAME
-    #     sleep 10
-    #     # kubectl get services -o wide
-    #     kubectl wait --for=condition=complete --timeout=5m job/darah-telegram
+  
