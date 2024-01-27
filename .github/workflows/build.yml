@@ -2,8 +2,7 @@ name: Build and publish to GCR
 
 on:
   push:
-    branches:
-      -dev
+    branches: [ "dev" ]
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
